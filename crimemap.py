@@ -1,5 +1,9 @@
-from flask import Flask,request,render_template
-from dbhelper import DBhelper
+from flask import Flask,request,render_template,url_for
+import dbconfig
+if dbconfig.test:
+    from mockdbhelper import MockDBHelper as DBhelper
+else:
+    from dbhelper import DBhelper
 
 app=Flask(__name__)
 DB=DBhelper()
@@ -13,7 +17,7 @@ def home():
         data=None
     return render_template('home.html',data=data)
 
-@app.route('/add')
+@app.route('/add',methods=['POST'])
 def add():
     try:
         data=request.form.get("user_input")
@@ -23,7 +27,7 @@ def add():
     return home()
 
 @app.route('/clear')
-def add():
+def clear():
     try:
 
         DB.clear_all()
